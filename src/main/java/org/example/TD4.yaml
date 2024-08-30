@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: STD23020 - TD4
+  version: '1.0.4'
+servers:
+  - url: https://localhost.std23020.com
+paths:
+  /customers/{customerId}/orders:
+    get:
+      summary: List all orders for a specific customer
+      parameters:
+        - in: path
+          name: customerId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Unique identifier of the customer
+      responses:
+        200:
+          description: List of orders for the specified customer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Create a new order for a specific customer
+      parameters:
+        - in: path
+          name: customerId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Unique identifier of the customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+        required: true
+      responses:
+        201:
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+    put:
+      summary: Update an existing order for a specific customer
+      parameters:
+        - in: path
+          name: customerId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Unique identifier of the customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrder'
+        required: true
+      responses:
+        200:
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{orderId}:
+    get:
+      summary: Get details of a specific order
+      parameters:
+        - in: path
+          name: orderId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Unique identifier of the order
+      responses:
+        200:
+          description: Details of the specified order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the order
+        reference:
+          type: string
+          description: Unique reference number for the order
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderMeal'
+          description: List of meals in the order with quantities
+        orderDatetime:
+          type: string
+          format: date-time
+          description: Date and time when the order was placed
+      required:
+        - id
+        - reference
+        - meals
+        - orderDatetime
+    OrderMeal:
+      type: object
+      properties:
+        mealId:
+          type: integer
+          format: int64
+          description: Unique identifier of the meal
+        quantity:
+          type: integer
+          description: Quantity of the meal ordered
+      required:
+        - mealId
+        - quantity
+    CreateOrder:
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Unique reference number for the order
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderMeal'
+          description: List of meals in the order with quantities
+      required:
+        - reference
+        - meals
+    UpdateOrder:
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Unique reference number for the order
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderMeal'
+          description: List of meals in the order with quantities
+      required:
+        - reference
+        - meals
