@@ -1,0 +1,107 @@
+openapi: 3.0.3
+info:
+  title: Football Player Management API
+  version: '1.0.0'
+servers:
+  - url: https://localhost.football.com
+paths:
+  /teams/{teamId}/players:
+    get:
+      summary: Get a list of players in a team
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: playerName
+          schema:
+            type: string
+          required: false
+          description: Filter players by name
+      responses:
+        200:
+          description: List of players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Player'
+    post:
+      summary: Create a new player
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePlayer'
+      responses:
+        201:
+          description: The created player
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+
+  /teams/{teamId}/players/transfer:
+    post:
+      summary: Transfer a list of players to a specific team
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Player'
+      responses:
+        200:
+          description: The updated team with the transferred players
+
+components:
+  schemas:
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "player_12345"
+        name:
+          type: string
+          example: "Cristiano Ronaldo"
+        number:
+          type: integer
+          example: 7
+        strongFoot:
+          type: string
+          enum: [Left, Right]
+          example: "Right"
+
+    CreatePlayer:
+      type: object
+      properties:
+        name:
+          type: string
+        number:
+          type: integer
+        strongFoot:
+          type: string
+          enum: [Left, Right]

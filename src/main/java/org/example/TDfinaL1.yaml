@@ -1,0 +1,70 @@
+openapi: 3.0.3
+info:
+  title:   Football Team Management API
+  version: '1.0.0'
+servers:
+  - url: https://localhost.football.com
+paths:
+  /competitions:
+    get:
+      summary: Get a list of competitions
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: The page number to retrieve
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: true
+          description: The number of items per page
+      responses:
+        200:
+          description: List of competitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competition'
+    post:
+      summary: Create a new competition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompetition'
+      responses:
+        201:
+          description: The created competition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competition'
+
+components:
+  schemas:
+    Competition:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "comp_12345"
+        name:
+          type: string
+          example: "LIGA"
+        location:
+          type: string
+          example: "ESPAGNE"
+
+    CreateCompetition:
+      type: object
+      properties:
+        name:
+          type: string
+        location:
+          type: string

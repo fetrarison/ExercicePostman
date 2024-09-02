@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: Football Team Management API
+  version: '1.0.0'
+servers:
+  - url: https://localhost.football.com
+paths:
+  /teams:
+    get:
+      summary: Get a list of teams
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: teamName
+          schema:
+            type: string
+          required: false
+          description: Filter teams by name
+      responses:
+        200:
+          description: List of teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+    post:
+      summary: Create a new team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeam'
+      responses:
+        201:
+          description: The created team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+
+  /teams/{teamId}/competitions:
+    post:
+      summary: Associate a team with a list of competitions
+      parameters:
+        - in: path
+          name: teamId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        200:
+          description: The updated team with associated competitions
+
+components:
+  schemas:
+    Team:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "team_12345"
+        name:
+          type: string
+          example: "Real Madrid"
+        slogan:
+          type: string
+          example: "Hala Madrid"
+        competitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Competition'
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+
+    CreateTeam:
+      type: object
+      properties:
+        name:
+          type: string
+        slogan:
+          type: string
